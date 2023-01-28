@@ -20,57 +20,68 @@ struct ContentView: View {
     ]
     @State private var score = 0
     @State private var turns = 0
+    @State private var health = 100
+    @State private var color = ""
     
     var body: some View {
-        VStack {
+        ZStack {
+            Color.green
+                .edgesIgnoringSafeArea(.all)
             VStack {
-                Text("Monopoly Jungle Adventure")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .padding()
-//                Text("Esplora una giungla piena di pericoli, raccogli monete e altri tesori nascosti per sopravvivere!")
-//                    .font(.title)
-//                    .padding()
-                Text("Score: \(score) Turno: \(turns)")
-                    .font(.title2)
-            }
-            ZStack {
-//                Color.green
-//                    .edgesIgnoringSafeArea(.all)
-                
+                VStack {
+                    Text("Monopoly Jungle Adventure")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .padding()
+                    Text("Score: \(score) Turns: \(turns) Health: \(health)")
+                        .font(.title2)
+                }
                 GridStack(rows: board.count, columns: board[0].count){ row, col in
-                                Rectangle()
-                        .fill(self.board[row][col] == 0 ? Color.brown : Color.yellow)
-                                    .onTapGesture {
-                                        self.board[row][col] = 1 - self.board[row][col]
-                                        let score = Int.random(in: 0...1)
-                                        self.board[row][col] = score
-                                        self.score += score
-                                        self.turns += 1
-                                    }
+                    Rectangle()
+                        .fill(self.board[row][col] == 0 ? Color.brown : getColor(name: color))
+                        .onTapGesture {
+                            self.board[row][col] = 1 - self.board[row][col]
+                            let score = Int.random(in: 0...1)
+                            self.board[row][col] = score
+                            self.score += score
+                            self.turns += 1
+                            if score == 0 {
+                                self.health -= 10
+                                self.color = "red"
+                            }else if score == 1 {
+                                self.color = "yellow"
                             }
-                
+                        }
+                }
+                Text("Esplora una giungla piena di pericoli, raccogli monete e altri tesori nascosti per sopravvivere!")
+                    .font(.subheadline)
+                    .padding()
             }
         }
     }
 }
 
-struct GridStack<Content: View>: View {
-    let rows: Int
-    let columns: Int
-    let content: (Int, Int) -> Content
-
-    var body: some View {
-        VStack {
-            ForEach(0 ..< rows) { row in
-                HStack {
-                    ForEach(0 ..< self.columns) { column in
-                        self.content(row, column)
-                    }
-                }
-            }
-        }
-    }
+func getColor(name: String) -> Color {
+  switch name {
+  case "red":
+    return .red
+  case "blue":
+    return .blue
+  case "green":
+    return .green
+  case "yellow":
+    return .yellow
+  case "orange":
+    return .orange
+  case "purple":
+    return .purple
+  case "gray":
+    return .gray
+  case "pink":
+    return .pink
+  default:
+    return .black
+  }
 }
 
 struct ContentView_Previews: PreviewProvider {
