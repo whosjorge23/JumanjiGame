@@ -40,14 +40,16 @@ struct ContentView: View {
                 }
                 GridStack(rows: board.count, columns: board[0].count){ row, col in
                     Rectangle()
-                        .fill(self.board[row][col] == 0 ? Color.brown : getColor(name: color))
+                        .fill(self.board[row][col] == 0 ? Color.brown : (self.board[row][col] == -1 ? Color.red : Color.yellow))
                         .onTapGesture {
                             self.board[row][col] = 1 - self.board[row][col]
-                            let score = Int.random(in: 0...1)
+                            let score = Int.random(in: -1...1)
                             self.board[row][col] = score
-                            self.score += score
+                            if score == 1 {
+                                self.score += score
+                            }
                             self.turns += 1
-                            if score == 0 {
+                            if score == -1 {
                                 self.health -= 10
 //                                self.color = "red"
                             }else if score == 1 {
@@ -66,7 +68,8 @@ struct ContentView: View {
                 self.turns = 0
                 self.health = 100
                 self.color = ""
-                self.board = [                [0, 0, 0, 0, 0],
+                self.board = [
+                    [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0],
