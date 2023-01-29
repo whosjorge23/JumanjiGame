@@ -39,26 +39,30 @@ struct ContentView: View {
                         .font(.title2)
                 }
                 GridStack(rows: board.count, columns: board[0].count){ row, col in
-                    Rectangle()
-                        .fill(self.board[row][col] == 0 ? Color.brown : (self.board[row][col] == -1 ? Color.red : Color.yellow))
-                        .onTapGesture {
-                            self.board[row][col] = 1 - self.board[row][col]
-                            let score = Int.random(in: -1...1)
-                            self.board[row][col] = score
-                            if score == 1 {
-                                self.score += score
-                            }
-                            self.turns += 1
-                            if score == -1 {
-                                self.health -= 10
-//                                self.color = "red"
-                            }else if score == 1 {
-                                self.color = "yellow"
-                            }
-                            gameOverd()
+                    ZStack {
+                        Rectangle()
+                            .fill(self.board[row][col] == 0 ? Utils().getColor(name: "brown") : (self.board[row][col] == -1 ? Utils().getColor(name: "red") : Utils().getColor(name: "yellow")))
+                            .onTapGesture {
+                                self.board[row][col] = 1 - self.board[row][col]
+                                print(self.board[row][col])
+                                let score = Int.random(in: -1...1)
+                                self.board[row][col] = score
+                                if score == 1 {
+                                    self.score += score
+                                }
+                                self.turns += 1
+                                if score == -1 {
+                                    self.health -= 10
+    //                                self.color = "red"
+                                }else if score == 1 {
+                                    self.color = "yellow"
+                                }
+                                gameOverd()
                         }
+                        Text(self.board[row][col] == 0 ? " " :(self.board[row][col] == -1 ? "☠️" : "💎"))
+                    }
                 }
-                Text("Esplora una giungla piena di pericoli, raccogli monete e altri tesori nascosti per sopravvivere!")
+                Text("Explore a jungle filled with dangers, gather coins and other hidden treasures to survive!")
                     .font(.subheadline)
                     .padding()
             }
@@ -93,18 +97,7 @@ struct ContentView: View {
 
 
 
-func getColor(name: String) -> Color {
-  switch name {
-  case "red":
-    return .red
-  case "green":
-    return .green
-  case "yellow":
-    return .yellow
-  default:
-    return .black
-  }
-}
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
