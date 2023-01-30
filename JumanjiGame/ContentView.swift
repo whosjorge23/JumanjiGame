@@ -18,6 +18,8 @@ struct ContentView: View {
         [0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0],
     ]
+    @State private var treasureArray = ["💎","👑","🏆","🪙"]
+    @State private var dangerArray = ["🐅","🐆","🦍","🏹"]
     @State private var score = 0
     @State private var turns = 0
     @State private var health = 100
@@ -43,23 +45,22 @@ struct ContentView: View {
                         Rectangle()
                             .fill(self.board[row][col] == 0 ? Utils().getColor(name: "brown") : (self.board[row][col] == -1 ? Utils().getColor(name: "red") : Utils().getColor(name: "yellow")))
                             .onTapGesture {
-                                self.board[row][col] = 1 - self.board[row][col]
-                                print(self.board[row][col])
-                                let score = Int.random(in: -1...1)
-                                self.board[row][col] = score
-                                if score == 1 {
-                                    self.score += score
+                                if self.board[row][col] != -1 && self.board[row][col] != 1 {
+                                    self.board[row][col] = 1 - self.board[row][col]
+                                    print(self.board[row][col])
+                                    let score = Int.random(in: -1...1)
+                                    self.board[row][col] = score
+                                    if score == 1 {
+                                        self.score += 10
+                                    }
+                                    self.turns += 1
+                                    if score == -1 {
+                                        self.health -= 10
+                                    }
+                                    gameOverd()
                                 }
-                                self.turns += 1
-                                if score == -1 {
-                                    self.health -= 10
-    //                                self.color = "red"
-                                }else if score == 1 {
-                                    self.color = "yellow"
-                                }
-                                gameOverd()
                         }
-                        Text(self.board[row][col] == 0 ? " " :(self.board[row][col] == -1 ? "☠️" : "💎"))
+                        Text(self.board[row][col] == 0 ? " " :(self.board[row][col] == -1 ? dangerArray.randomElement()! : treasureArray.randomElement()!))
                     }
                 }
                 Text("Explore a jungle filled with dangers, gather coins and other hidden treasures to survive!")
@@ -67,7 +68,7 @@ struct ContentView: View {
                     .padding()
             }
         }.alert(isPresented: $gameOver) {
-            Alert(title: Text("Game Over"), message: Text("Il tuo punteggio è \(score) e hai completato \(turns) turni"), dismissButton: .default(Text("Ok")) {
+            Alert(title: Text("Game Over"), message: Text("Your score is \(score) and you have completed \(turns) rounds."), dismissButton: .default(Text("Ok")) {
                 self.score = 0
                 self.turns = 0
                 self.health = 100
